@@ -71,7 +71,7 @@ class _TouchLockOverlayState extends State<TouchLockOverlay>
       onVerticalDragUpdate: (d) => _onDragUpdate(d, screenH),
       onVerticalDragEnd: _onDragEnd,
       child: Container(
-        color: AppColors.background.withOpacity(0.90),
+        color: AppColors.background.withValues(alpha: 0.90),
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -107,13 +107,13 @@ class _LockIcon extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(
             color: AppColors.cyan
-                .withOpacity(0.28 + pulse.value * 0.42),
+                .withValues(alpha: 0.28 + pulse.value * 0.42),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
               color: AppColors.cyan
-                  .withOpacity(0.08 + pulse.value * 0.18),
+                  .withValues(alpha: 0.08 + pulse.value * 0.18),
               blurRadius: 30,
               spreadRadius: 8,
             ),
@@ -123,7 +123,7 @@ class _LockIcon extends StatelessWidget {
           Icons.lock_rounded,
           size: 42,
           color: AppColors.cyan
-              .withOpacity(0.55 + pulse.value * 0.45),
+              .withValues(alpha: 0.55 + pulse.value * 0.45),
         ),
       ),
     )

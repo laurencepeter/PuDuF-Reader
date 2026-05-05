@@ -74,18 +74,18 @@ class _GlowingCardState extends State<GlowingCard>
               borderRadius:
                   BorderRadius.circular(widget.borderRadius),
               border: Border.all(
-                color: widget.glowColor.withOpacity(0.35),
+                color: widget.glowColor.withValues(alpha: 0.35),
               ),
               boxShadow: [
                 BoxShadow(
                   color: widget.glowColor
-                      .withOpacity(_glow.value * 0.3),
+                      .withValues(alpha: _glow.value * 0.3),
                   blurRadius: 18,
                   spreadRadius: 1,
                 ),
                 BoxShadow(
                   color: widget.glowColor
-                      .withOpacity(_glow.value * 0.1),
+                      .withValues(alpha: _glow.value * 0.1),
                   blurRadius: 40,
                   spreadRadius: 4,
                 ),

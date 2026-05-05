@@ -29,7 +29,7 @@ class ReaderTopBar extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.background.withOpacity(0.96),
+              AppColors.background.withValues(alpha: 0.96),
               Colors.transparent,
             ],
           ),
@@ -79,7 +79,7 @@ class ReaderProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ReaderProvider>(
-      builder: (_, reader, __) => Container(
+      builder: (_, reader, __) => SizedBox(
         height: 3,
         child: FractionallySizedBox(
           alignment: Alignment.centerLeft,
@@ -127,7 +127,7 @@ class ReaderBottomBar extends StatelessWidget {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              AppColors.background.withOpacity(0.97),
+              AppColors.background.withValues(alpha: 0.97),
               Colors.transparent,
             ],
           ),
