@@ -286,7 +286,7 @@ class _FileCard extends StatelessWidget {
           // Thumbnail / icon area
           Expanded(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     AppColors.surface,
@@ -295,7 +295,7 @@ class _FileCard extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: const BorderRadius.vertical(
+                borderRadius: BorderRadius.vertical(
                     top: Radius.circular(15)),
               ),
               child: Stack(
@@ -307,7 +307,7 @@ class _FileCard extends StatelessWidget {
                     color: AppColors.cyan.withValues(alpha: 0.35),
                   ),
                   if (doc.bookmarks.isNotEmpty)
-                    Positioned(
+                    const Positioned(
                       top: 8,
                       right: 8,
                       child: Icon(Icons.bookmark_rounded,
@@ -507,9 +507,9 @@ class _OpenFab extends StatelessWidget {
       child: Container(
         width: 60,
         height: 60,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             colors: [AppColors.cyan, AppColors.purple],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

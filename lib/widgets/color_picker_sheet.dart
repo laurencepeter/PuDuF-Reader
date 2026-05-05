@@ -50,11 +50,11 @@ class _ColorPickerSheetState extends State<ColorPickerSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(24)),
-        border: const Border(
+            BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(
           top: BorderSide(color: AppColors.cardBorder),
           left: BorderSide(color: AppColors.cardBorder),
           right: BorderSide(color: AppColors.cardBorder),

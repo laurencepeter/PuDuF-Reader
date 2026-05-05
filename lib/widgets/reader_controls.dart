@@ -257,7 +257,7 @@ class _PageCounter extends StatelessWidget {
           color: AppColors.card,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: AppColors.cardBorder),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: AppColors.glowCyan,
               blurRadius: 8,
