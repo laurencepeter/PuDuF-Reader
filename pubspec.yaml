@@ -1,0 +1,54 @@
+name: puduf_reader
+description: "PuDuF Reader — Open-source, ad-free PDF reader with futuristic design. ISO 32000-2:2020 compliant via PDFium engine."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # PDF rendering — PDFium engine (ISO 32000-2:2020 / PDF 2.0 compliant)
+  pdfrx: ^1.0.77
+
+  # State management
+  provider: ^6.1.2
+
+  # Color picker for theme customization
+  flutter_colorpicker: ^1.1.0
+
+  # File picker — handles storage permissions internally
+  file_picker: ^8.1.2
+
+  # Persistent settings storage
+  shared_preferences: ^2.3.3
+
+  # Rich animation library
+  flutter_animate: ^4.5.2
+
+  # File system paths
+  path_provider: ^2.1.5
+
+  # Keep screen on while reading
+  wakelock_plus: ^1.2.10
+
+  # Beautiful typography
+  google_fonts: ^6.2.1
+
+  # Share PDFs with other apps
+  share_plus: ^10.0.3
+
+  # Storage permissions for Android <13
+  permission_handler: ^11.3.1
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
