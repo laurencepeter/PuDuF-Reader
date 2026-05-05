@@ -136,7 +136,7 @@ class _BackgroundPainter extends CustomPainter {
 
     // Subtle grid
     final gridPaint = Paint()
-      ..color = const Color(0xFF1E2A4A).withOpacity(0.22)
+      ..color = const Color(0xFF1E2A4A).withValues(alpha: 0.22)
       ..strokeWidth = 0.5;
     const gs = 56.0;
     for (double x = 0; x < size.width; x += gs) {
@@ -158,7 +158,7 @@ class _BackgroundPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(px * size.width, py * size.height),
         p.size,
-        Paint()..color = base.withOpacity(p.opacity),
+        Paint()..color = base.withValues(alpha: p.opacity),
       );
 
       if (p.size > 1.6) {
@@ -166,7 +166,7 @@ class _BackgroundPainter extends CustomPainter {
           Offset(px * size.width, py * size.height),
           p.size * 2.5,
           Paint()
-            ..color = base.withOpacity(p.opacity * 0.25)
+            ..color = base.withValues(alpha: p.opacity * 0.25)
             ..maskFilter =
                 const MaskFilter.blur(BlurStyle.normal, 4),
         );

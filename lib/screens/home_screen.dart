@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -305,7 +304,7 @@ class _FileCard extends StatelessWidget {
                   Icon(
                     Icons.picture_as_pdf_rounded,
                     size: 56,
-                    color: AppColors.cyan.withOpacity(0.35),
+                    color: AppColors.cyan.withValues(alpha: 0.35),
                   ),
                   if (doc.bookmarks.isNotEmpty)
                     Positioned(
@@ -321,7 +320,7 @@ class _FileCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.background.withOpacity(0.8),
+                        color: AppColors.background.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(

@@ -59,8 +59,8 @@ class ReadingSettings {
 
   Map<String, dynamic> toJson() => {
         'displayMode': displayMode.index,
-        'customBackground': customBackground.value,
-        'customForeground': customForeground.value,
+        'customBackground': customBackground.toARGB32(),
+        'customForeground': customForeground.toARGB32(),
         'brightnessOverlay': brightnessOverlay,
         'keepScreenOn': keepScreenOn,
         'fullScreen': fullScreen,

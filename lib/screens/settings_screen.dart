@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../config/app_colors.dart';
-import '../config/constants.dart';
 import '../models/reading_settings.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/animated_background.dart';
 import '../widgets/color_picker_sheet.dart';
-import '../widgets/futuristic_button.dart';
 import '../widgets/glowing_card.dart';
 
 // ── Full-page settings (accessible from home) ─────────────────────────────
@@ -491,7 +489,7 @@ class _Toggle extends StatelessWidget {
         Switch(
           value: value,
           onChanged: onChanged,
-          activeColor: AppColors.cyan,
+          activeThumbColor: AppColors.cyan,
           inactiveTrackColor: AppColors.cardBorder,
         ),
       ],
@@ -576,7 +574,7 @@ class _DirChip extends StatelessWidget {
         duration: 200.ms,
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? AppColors.cyan.withOpacity(0.12) : AppColors.card,
+          color: selected ? AppColors.cyan.withValues(alpha: 0.12) : AppColors.card,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: selected ? AppColors.cyan : AppColors.cardBorder,

@@ -111,7 +111,7 @@ class _Logo extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.cyan.withOpacity(0.25),
+                    color: AppColors.cyan.withValues(alpha: 0.25),
                     width: 1.5,
                   ),
                 ),
@@ -133,7 +133,7 @@ class _Logo extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.purple.withOpacity(0.2),
+                    color: AppColors.purple.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -287,7 +287,7 @@ class _LoadingDotsState extends State<_LoadingDots>
             height: 6,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.cyan.withOpacity(opacity),
+              color: AppColors.cyan.withValues(alpha: opacity),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.glowCyan,

@@ -74,7 +74,7 @@ class PuDuFApp extends StatelessWidget {
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected)
-              ? AppColors.cyan.withOpacity(0.3)
+              ? AppColors.cyan.withValues(alpha: 0.3)
               : AppColors.cardBorder,
         ),
       ),

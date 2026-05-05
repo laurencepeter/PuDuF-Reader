@@ -22,7 +22,7 @@ class ReaderScreen extends StatefulWidget {
 class _ReaderScreenState extends State<ReaderScreen>
     with WidgetsBindingObserver {
   final PdfViewerController _pdfController = PdfViewerController();
-  bool _controlsVisible = true;
+  final bool _controlsVisible = true;
 
   @override
   void initState() {
@@ -36,7 +36,6 @@ class _ReaderScreenState extends State<ReaderScreen>
     WidgetsBinding.instance.removeObserver(this);
     _restoreSystemUI();
     WakelockPlus.disable();
-    _pdfController.dispose();
     super.dispose();
   }
 
@@ -183,8 +182,8 @@ class _ReaderScreenState extends State<ReaderScreen>
                 Positioned.fill(
                   child: IgnorePointer(
                     child: Container(
-                      color: Colors.black.withOpacity(
-                          1.0 -
+                      color: Colors.black.withValues(
+                          alpha: 1.0 -
                               theme.settings.brightnessOverlay),
                     ),
                   ),
@@ -258,11 +257,10 @@ class _ReaderScreenState extends State<ReaderScreen>
       controller: _pdfController,
       params: PdfViewerParams(
         backgroundColor: theme.pdfBackgroundColor,
-        scrollDirection:
-            theme.settings.scrollDirection ==
-                    PageScrollDirection.horizontal
-                ? Axis.horizontal
-                : Axis.vertical,
+        panAxis: theme.settings.scrollDirection ==
+                PageScrollDirection.horizontal
+            ? PanAxis.horizontal
+            : PanAxis.vertical,
         onPageChanged: (page) {
           if (page == null) return;
           reader.onPageChanged(page);
@@ -282,7 +280,7 @@ class _ReaderScreenState extends State<ReaderScreen>
                 pageNumber: doc.lastPage));
           }
         },
-        pageDropShadowColor: Colors.transparent,
+        pageDropShadow: null,
       ),
     );
 

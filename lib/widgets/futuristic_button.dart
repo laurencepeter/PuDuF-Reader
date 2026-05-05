@@ -87,7 +87,7 @@ class _FuturisticButtonState extends State<FuturisticButton>
                   : [
                       BoxShadow(
                         color: widget.color
-                            .withOpacity(_glow.value * 0.45),
+                            .withValues(alpha: _glow.value * 0.45),
                         blurRadius: 16,
                         spreadRadius: 1,
                       ),
