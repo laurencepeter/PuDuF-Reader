@@ -60,7 +60,7 @@ class PuDuFApp extends StatelessWidget {
         bodyColor: AppColors.textPrimary,
         displayColor: AppColors.textPrimary,
       ),
-      sliderTheme: SliderThemeData(
+      sliderTheme: const SliderThemeData(
         activeTrackColor: AppColors.cyan,
         thumbColor: AppColors.cyan,
         overlayColor: AppColors.glowCyan,

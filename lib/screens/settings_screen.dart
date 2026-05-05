@@ -104,11 +104,11 @@ class SettingsSheet extends StatelessWidget {
       maxChildSize: 0.95,
       expand: false,
       builder: (_, scrollCtrl) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColors.surface,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(24)),
-          border: const Border(
+              BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border(
             top: BorderSide(color: AppColors.cardBorder),
             left: BorderSide(color: AppColors.cardBorder),
             right: BorderSide(color: AppColors.cardBorder),
@@ -227,7 +227,7 @@ class _ModeChip extends StatelessWidget {
             width: selected ? 2 : 1,
           ),
           boxShadow: selected
-              ? [
+              ? const [
                   BoxShadow(
                     color: AppColors.glowCyan,
                     blurRadius: 12,
@@ -388,9 +388,9 @@ class _BrightnessSection extends StatelessWidget {
                   color: AppColors.cyan, size: 18),
             ],
           ),
-          Text(
+          const Text(
             'Tip: dim the screen for comfortable reading in the dark',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textMuted,
               fontSize: 11,
             ),
@@ -612,15 +612,15 @@ class _DirChip extends StatelessWidget {
 class _IsoNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GlowingCard(
+    return const GlowingCard(
       glowColor: AppColors.green,
       pulsate: false,
       child: Row(
         children: [
-          const Icon(Icons.verified_rounded,
+          Icon(Icons.verified_rounded,
               color: AppColors.green, size: 24),
-          const SizedBox(width: 12),
-          const Expanded(
+          SizedBox(width: 12),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

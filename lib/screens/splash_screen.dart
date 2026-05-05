@@ -115,7 +115,7 @@ class _Logo extends StatelessWidget {
                     width: 1.5,
                   ),
                 ),
-                child: CustomPaint(
+                child: const CustomPaint(
                   painter: _ArcPainter(
                     color: AppColors.cyan,
                     sweepAngle: 1.8,
@@ -137,7 +137,7 @@ class _Logo extends StatelessWidget {
                     width: 1,
                   ),
                 ),
-                child: CustomPaint(
+                child: const CustomPaint(
                   painter: _ArcPainter(
                     color: AppColors.purple,
                     sweepAngle: 1.2,
@@ -150,7 +150,7 @@ class _Logo extends StatelessWidget {
             Container(
               width: 80,
               height: 80,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.surface,
                 boxShadow: [
@@ -288,7 +288,7 @@ class _LoadingDotsState extends State<_LoadingDots>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.cyan.withValues(alpha: opacity),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: AppColors.glowCyan,
                   blurRadius: 6,
