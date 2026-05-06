@@ -8,7 +8,9 @@ import '../models/reading_settings.dart';
 import '../providers/library_provider.dart';
 import '../providers/reader_provider.dart';
 import '../providers/theme_provider.dart';
+import '../widgets/bookmarks_panel.dart';
 import '../widgets/reader_controls.dart';
+import '../widgets/toc_drawer.dart';
 import '../widgets/touch_lock_overlay.dart';
 import 'settings_screen.dart';
 
@@ -22,7 +24,13 @@ class ReaderScreen extends StatefulWidget {
 class _ReaderScreenState extends State<ReaderScreen>
     with WidgetsBindingObserver {
   final PdfViewerController _pdfController = PdfViewerController();
-  final bool _controlsVisible = true;
+
+  // PDF outline (loaded once when the document is ready)
+  List<PdfOutlineNode> _outline = [];
+
+  // Panel visibility flags
+  bool _isTocOpen = false;
+  bool _isBookmarksPanelOpen = false;
 
   @override
   void initState() {
@@ -42,38 +50,46 @@ class _ReaderScreenState extends State<ReaderScreen>
   // ── System UI helpers ─────────────────────────────────────────────────
 
   void _applyDisplayMode() {
-    final settings =
-        context.read<ThemeProvider>().settings;
+    final settings = context.read<ThemeProvider>().settings;
     if (settings.keepScreenOn) WakelockPlus.enable();
     if (settings.fullScreen) {
-      SystemChrome.setEnabledSystemUIMode(
-          SystemUiMode.immersiveSticky);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
       context.read<ReaderProvider>().setFullScreen(true);
     }
   }
 
   void _restoreSystemUI() {
-    SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.edgeToEdge);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   void _toggleFullScreen(ReaderProvider reader) {
     final entering = !reader.isFullScreen;
     reader.setFullScreen(entering);
     if (entering) {
-      SystemChrome.setEnabledSystemUIMode(
-          SystemUiMode.immersiveSticky);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     } else {
-      SystemChrome.setEnabledSystemUIMode(
-          SystemUiMode.edgeToEdge);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+  }
+
+  // ── Outline loading ───────────────────────────────────────────────────
+
+  Future<void> _loadOutline(PdfDocument document) async {
+    try {
+      final outline = await document.loadOutline();
+      if (mounted) {
+        setState(() => _outline = outline ?? []);
+      }
+    } catch (_) {
+      // Some PDFs have no outline — that's fine
     }
   }
 
   // ── Page-jump dialog ──────────────────────────────────────────────────
 
   void _showJumpDialog(ReaderProvider reader) {
-    final ctrl = TextEditingController(
-        text: reader.currentPage.toString());
+    final ctrl =
+        TextEditingController(text: reader.currentPage.toString());
     showDialog<void>(
       context: context,
       builder: (_) => AlertDialog(
@@ -110,7 +126,8 @@ class _ReaderScreenState extends State<ReaderScreen>
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
+                style:
+                    TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -141,18 +158,53 @@ class _ReaderScreenState extends State<ReaderScreen>
     );
   }
 
-  // ── Bookmark ──────────────────────────────────────────────────────────
+  // ── Bookmark helpers ──────────────────────────────────────────────────
 
   void _toggleBookmark() {
     final reader = context.read<ReaderProvider>();
     final library = context.read<LibraryProvider>();
     final path = reader.currentDocument?.path ?? '';
     library.toggleBookmark(path, reader.currentPage);
-
     final doc = library.findByPath(path);
-    if (doc != null) {
-      reader.updateBookmarks(doc.bookmarks);
+    if (doc != null) reader.updateBookmarks(doc.bookmarks);
+  }
+
+  void _removeBookmark(int page) {
+    final reader = context.read<ReaderProvider>();
+    final library = context.read<LibraryProvider>();
+    final path = reader.currentDocument?.path ?? '';
+    // Only remove if it exists
+    if (library.findByPath(path)?.bookmarks.contains(page) == true) {
+      library.toggleBookmark(path, page);
+      final doc = library.findByPath(path);
+      if (doc != null) reader.updateBookmarks(doc.bookmarks);
     }
+  }
+
+  // ── Resume snackbar ───────────────────────────────────────────────────
+
+  void _showResumeSnackbar(int page) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.bookmark_rounded,
+                color: AppColors.cyan, size: 16),
+            const SizedBox(width: 8),
+            Text(
+              'Resuming from page $page',
+              style: const TextStyle(color: AppColors.textPrimary),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.surface,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)),
+        duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      ),
+    );
   }
 
   // ── Build ─────────────────────────────────────────────────────────────
@@ -170,44 +222,60 @@ class _ReaderScreenState extends State<ReaderScreen>
                           color: AppColors.textSecondary))));
         }
 
+        // Close panels if lock is activated
+        if (reader.isTouchLocked &&
+            (_isTocOpen || _isBookmarksPanelOpen)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() {
+                _isTocOpen = false;
+                _isBookmarksPanelOpen = false;
+              });
+            }
+          });
+        }
+
+        final controlsVisible =
+            reader.isControlsVisible && !reader.isTouchLocked;
+
         return Scaffold(
           backgroundColor: theme.pdfBackgroundColor,
           body: Stack(
             children: [
-              // PDF viewer (with optional colour filter)
+              // ── PDF viewer ──────────────────────────────────────
               _buildPdfViewer(reader, theme),
 
-              // Brightness overlay (dim layer)
+              // ── Brightness dim layer ────────────────────────────
               if (theme.settings.brightnessOverlay < 1.0)
                 Positioned.fill(
                   child: IgnorePointer(
                     child: Container(
                       color: Colors.black.withValues(
-                          alpha: 1.0 -
-                              theme.settings.brightnessOverlay),
+                          alpha:
+                              1.0 - theme.settings.brightnessOverlay),
                     ),
                   ),
                 ),
 
-              // Touch-lock overlay
+              // ── Tap-to-toggle-controls (only when unlocked) ─────
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: reader.isTouchLocked
+                    ? null
+                    : reader.toggleControls,
+                child: const SizedBox.expand(),
+              ),
+
+              // ── Touch-lock overlay (transparent) ────────────────
               if (reader.isTouchLocked)
                 Positioned.fill(
                   child: TouchLockOverlay(
-                    onUnlock: () =>
-                        reader.setTouchLocked(false),
+                    onUnlock: () => reader.setTouchLocked(false),
                   ),
                 ),
 
-              // Tap-to-toggle-controls (pass-through)
-              if (!reader.isTouchLocked)
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: reader.toggleControls,
-                  child: const SizedBox.expand(),
-                ),
-
-              // Top bar
-              if (_controlsVisible && !reader.isTouchLocked)
+              // ── Top bar ─────────────────────────────────────────
+              if (controlsVisible)
                 Positioned(
                   top: 0,
                   left: 0,
@@ -215,11 +283,16 @@ class _ReaderScreenState extends State<ReaderScreen>
                   child: ReaderTopBar(
                     onSettings: _openSettings,
                     onBookmark: _toggleBookmark,
+                    onToc: () => setState(
+                        () => _isTocOpen = !_isTocOpen),
+                    onBookmarksList: () => setState(
+                        () => _isBookmarksPanelOpen =
+                            !_isBookmarksPanelOpen),
                   ),
                 ),
 
-              // Progress + bottom bar
-              if (_controlsVisible && !reader.isTouchLocked)
+              // ── Progress bar + bottom bar ────────────────────────
+              if (controlsVisible)
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -238,6 +311,34 @@ class _ReaderScreenState extends State<ReaderScreen>
                         onSettings: _openSettings,
                       ),
                     ],
+                  ),
+                ),
+
+              // ── TOC drawer (slides from left) ────────────────────
+              if (_isTocOpen && !reader.isTouchLocked)
+                Positioned.fill(
+                  child: TocDrawer(
+                    outline: _outline,
+                    currentPage: reader.currentPage,
+                    onNavigate: (page) =>
+                        _pdfController.goToPage(pageNumber: page),
+                    onClose: () =>
+                        setState(() => _isTocOpen = false),
+                  ),
+                ),
+
+              // ── Bookmarks panel (slides from right) ──────────────
+              if (_isBookmarksPanelOpen && !reader.isTouchLocked)
+                Positioned.fill(
+                  child: BookmarksPanel(
+                    bookmarks: reader.bookmarks,
+                    currentPage: reader.currentPage,
+                    totalPages: reader.totalPages,
+                    onNavigate: (page) =>
+                        _pdfController.goToPage(pageNumber: page),
+                    onRemove: _removeBookmark,
+                    onClose: () => setState(
+                        () => _isBookmarksPanelOpen = false),
                   ),
                 ),
             ],
@@ -264,7 +365,6 @@ class _ReaderScreenState extends State<ReaderScreen>
         onPageChanged: (page) {
           if (page == null) return;
           reader.onPageChanged(page);
-          // Persist progress to library
           context.read<LibraryProvider>().updateLastPage(
                 doc.path,
                 page,
@@ -274,10 +374,16 @@ class _ReaderScreenState extends State<ReaderScreen>
         onViewerReady: (document, _) {
           final total = document.pages.length;
           reader.onDocumentReady(total);
-          // Jump to last saved page
+
+          // Load TOC outline
+          _loadOutline(document);
+
+          // Jump to last saved page and notify user
           if (doc.lastPage > 1) {
-            Future.microtask(() => _pdfController.goToPage(
-                pageNumber: doc.lastPage));
+            Future.microtask(() {
+              _pdfController.goToPage(pageNumber: doc.lastPage);
+              _showResumeSnackbar(doc.lastPage);
+            });
           }
         },
         pageDropShadow: null,
