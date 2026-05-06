@@ -78,7 +78,7 @@ class _ReaderScreenState extends State<ReaderScreen>
     try {
       final outline = await document.loadOutline();
       if (mounted) {
-        setState(() => _outline = outline ?? []);
+        setState(() => _outline = outline);
       }
     } catch (_) {
       // Some PDFs have no outline — that's fine

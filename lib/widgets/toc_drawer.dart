@@ -244,7 +244,7 @@ class _TocDrawerState extends State<TocDrawer> {
             ),
             decoration: isActive
                 ? BoxDecoration(
-                    border: Border(
+                    border: const Border(
                       left: BorderSide(
                           color: AppColors.cyan, width: 3),
                     ),
@@ -319,7 +319,7 @@ class _TocDrawerState extends State<TocDrawer> {
           ...node.children
               .map((child) =>
                   _buildNode(child, depth + 1, activePage))
-              .toList(),
+              ,
       ],
     );
   }

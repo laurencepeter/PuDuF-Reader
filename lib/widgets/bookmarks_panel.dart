@@ -203,7 +203,7 @@ class BookmarksPanel extends StatelessWidget {
                         : AppColors.orange.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.bookmark_rounded,
                     color: AppColors.orange,
                     size: 18,
