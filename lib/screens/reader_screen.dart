@@ -75,15 +75,17 @@ class _ReaderScreenState extends State<ReaderScreen>
   // ── Outline loading ───────────────────────────────────────────────────
 
   Future<void> _loadOutline(PdfDocument document) async {
-    try {
-      final outline = await document.loadOutline();
-      if (mounted) {
-        setState(() => _outline = outline);
-      }
-    } catch (_) {
-      // Some PDFs have no outline — that's fine
-    }
+  try {
+    final outline = await document.loadOutline();
+    if (!mounted) return;
+
+    setState(() {
+      _outline = outline;
+    });
+  } catch (_) {
+    // PDFs may not contain outlines — safe to ignore
   }
+}
 
   // ── Page-jump dialog ──────────────────────────────────────────────────
 
