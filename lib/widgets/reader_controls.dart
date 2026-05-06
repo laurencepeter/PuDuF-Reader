@@ -7,11 +7,15 @@ import '../providers/reader_provider.dart';
 class ReaderTopBar extends StatelessWidget {
   final VoidCallback onSettings;
   final VoidCallback onBookmark;
+  final VoidCallback onToc;
+  final VoidCallback onBookmarksList;
 
   const ReaderTopBar({
     super.key,
     required this.onSettings,
     required this.onBookmark,
+    required this.onToc,
+    required this.onBookmarksList,
   });
 
   @override
@@ -40,31 +44,50 @@ class ReaderTopBar extends StatelessWidget {
               icon: Icons.arrow_back_ios_new_rounded,
               onTap: () => Navigator.pop(context),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 6),
+            // TOC / chapters button
+            _IconBtn(
+              icon: Icons.menu_book_rounded,
+              onTap: onToc,
+              tooltip: 'Chapters',
+            ),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 reader.currentDocument?.displayName ?? '',
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  fontSize: 14,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            const SizedBox(width: 8),
+            // Bookmarks list button
+            _IconBtn(
+              icon: Icons.bookmarks_rounded,
+              onTap: onBookmarksList,
+              color: reader.bookmarks.isNotEmpty ? AppColors.orange : null,
+              tooltip: 'Bookmarks',
+            ),
+            const SizedBox(width: 4),
+            // Toggle current-page bookmark
             _IconBtn(
               icon: reader.isCurrentPageBookmarked
                   ? Icons.bookmark_rounded
                   : Icons.bookmark_border_rounded,
-              color: reader.isCurrentPageBookmarked
-                  ? AppColors.orange
-                  : null,
+              color: reader.isCurrentPageBookmarked ? AppColors.orange : null,
               onTap: onBookmark,
+              tooltip: reader.isCurrentPageBookmarked
+                  ? 'Remove bookmark'
+                  : 'Add bookmark',
             ),
             const SizedBox(width: 4),
             _IconBtn(
               icon: Icons.tune_rounded,
               onTap: onSettings,
+              tooltip: 'Settings',
             ),
           ],
         ),
@@ -83,8 +106,7 @@ class ReaderProgressBar extends StatelessWidget {
         height: 3,
         child: FractionallySizedBox(
           alignment: Alignment.centerLeft,
-          widthFactor:
-              reader.readingProgress.clamp(0.0, 1.0),
+          widthFactor: reader.readingProgress.clamp(0.0, 1.0),
           child: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -165,35 +187,40 @@ class ReaderBottomBar extends StatelessWidget {
   }
 }
 
-// ── Reusable icon buttons ─────────────────────────────────────────────────
+// ── Reusable icon buttons ─────────────────────────────────────────────────────
 
 class _IconBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final Color? color;
+  final String? tooltip;
 
   const _IconBtn({
     required this.icon,
     required this.onTap,
     this.color,
+    this.tooltip,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final btn = GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 38,
+        height: 38,
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.cardBorder),
         ),
-        child: Icon(icon,
-            size: 20, color: color ?? AppColors.textPrimary),
+        child: Icon(icon, size: 19, color: color ?? AppColors.textPrimary),
       ),
     );
+    if (tooltip != null) {
+      return Tooltip(message: tooltip!, child: btn);
+    }
+    return btn;
   }
 }
 
@@ -251,8 +278,7 @@ class _PageCounter extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: BorderRadius.circular(20),
