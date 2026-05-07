@@ -2,12 +2,12 @@
 
 **Open Source · Ad-Free · ISO 32000-2:2020**
 
-A futuristic PDF reader for Android built with Flutter. No ads, no tracking, no subscriptions — just clean, fast reading.
+A futuristic PDF reader for Android built with Flutter. No ads, no tracking, no subscriptions - just clean, fast reading.
 
 ## Features
 
 **Reading**
-- Powered by PDFium (the same engine as Chrome) — fully ISO 32000-2:2020 / PDF 2.0 compliant
+- Powered by PDFium (the same engine as Chrome) - fully ISO 32000-2:2020 / PDF 2.0 compliant
 - Resumes from your last page automatically
 - Pinch-to-zoom (0.5× – 5×)
 - Vertical or horizontal scroll direction
@@ -24,7 +24,7 @@ A futuristic PDF reader for Android built with Flutter. No ads, no tracking, no 
 - Six display modes: Light, Dark, AMOLED Dark, Low Light, Night, and fully Custom
 - Custom colour picker for page background and content tint
 - In-app brightness overlay for comfortable reading in the dark
-- Touch lock — lock the screen against accidental taps; swipe up to unlock
+- Touch lock - lock the screen against accidental taps; swipe up to unlock
 
 **Design**
 - Glowing cyan/purple futuristic UI built entirely in Flutter
